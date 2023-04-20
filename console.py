@@ -139,8 +139,8 @@ class HBNBCommand(cmd.Cmd):
                     value = int(value)
                 params[key] = value
             except:
-                # Skip unrecognized parameters
                 pass
+                # Skip unrecognized parameters
         # Create a new instance of the class with the given parameters
         new_instance = HBNBCommand.classes[class_name](**params)
         new_instance.save()
