@@ -13,6 +13,6 @@ class City(BaseModel, Base):
 
     name = Column(String(128), nullable=False)
     state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
-
-	# The relationship theory
-	citie_s = relationship('Place', cascade='delete, all, delete-orphan', backref='cities')
+    # The relationship theory
+    places = relationship('Place', cascade='delete, all, delete-orphan',
+                          backref='cities')
