@@ -4,7 +4,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer
 
 class User(BaseModel, Base):
-    """This class defines a user by various attributes SQLALCHEMY mapping"""
+    """This class defines, a user by various attributes SQLALCHEMY mapping"""
     """This is the mapping mechanism(Instrumentation, of 'class' to 'table')"""
 
 	__tablename__ = 'users'
