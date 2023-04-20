@@ -2,6 +2,7 @@
 """This module defines a class User"""
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer
+from sqlalchemy.orm import relationship
 
 class User(BaseModel, Base):
     """This class defines, a user by various attributes SQLALCHEMY mapping"""
@@ -13,3 +14,6 @@ class User(BaseModel, Base):
     password = Column(String(128), nullable=False)
     first_name = Column(String(128), nullable=False)
     last_name = Column(String(128), nullable=False)
+
+	# Setting up the relationship Theory
+	user = relationship('Place', cascade='delete, all, delete-orphan' backref='user')
