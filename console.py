@@ -37,7 +37,6 @@ class HBNBCommand(cmd.Cmd):
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
-
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
@@ -114,35 +113,24 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create a new instance of the class with the given parameters"""
-        if not args:
+        """ Create an object of any class"""
+        try:
+            if not args:
+                raise SyntaxError()
+            arg_list = args.split(" ")
+            kw = {}
+            for arg in arg_list[1:]:
+                arg_splited = arg.split("=")
+                arg_splited[1] = eval(arg_splited[1])
+                if type(arg_splited[1]) is str:
+                    arg_splited[1] = arg_splited[1].replace("_", " ")\
+                                    .replace('"', '\\"')
+                kw[arg_splited[0]] = arg_splited[1]
+        except SyntaxError:
             print("** class name missing **")
-            return
-        arg_list = args.split(" ")
-        class_name = arg_list[0]
-        if class_name not in HBNBCommand.classes:
+        except NameError:
             print("** class doesn't exist **")
-            return
-        # Parse arguments and convert them into a dictionary
-        params = {}
-        for i in range(1, len(arg_list)):
-            try:
-                key, value = arg_list[i].split('=')
-                if value[0] == '"' and value[-1] == '"' and len(value) > 1:
-                    # String value
-                    value = value[1:-1].replace('_', ' ').replace('\\"', '"')
-                elif '.' in value:
-                    # Float value
-                    value = float(value)
-                else:
-                    # Integer value
-                    value = int(value)
-                params[key] = value
-            except SyntaxError:
-                pass
-                # Skip unrecognized parameters
-        # Create a new instance of the class with the given parameters
-        new_instance = HBNBCommand.classes[class_name](**params)
+        new_instance = HBNBCommand.classes[arg_list[0]](**kw)
         new_instance.save()
         print(new_instance.id)
 

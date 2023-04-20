@@ -21,3 +21,5 @@ class User(BaseModel, Base):
     # Setting up the relationship Theory
     user = relationship('Place', cascade='delete, all, delete-orphan',
                         backref='user')
+    reviews = relationship('Review', cascade='all, delete, delete-orphan',
+                            backref='user')

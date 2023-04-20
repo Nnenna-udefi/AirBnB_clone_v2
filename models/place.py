@@ -23,3 +23,24 @@ class Place(BaseModel, Base):
     latitude = Column(Float(0.0), nullable=True)
     longitude = Column(Float(0.0), nullable=True)
     amenity_ids = []
+
+
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        reviews = relationship("Review", cascade='all, delete, delete-orphan',
+                               backref="place")
+    else:
+        @property
+        def reviews(self):
+            """ Returns list of reviews.id """
+            var = models.storage.all()
+            list_review = []
+            result = []
+            for key in var:
+                review = key.replace('.', ' ')
+                review = shlex.split(review)
+                if (review[0] == 'Review'):
+                    list_review.append(var[key])
+            for obj in list_review:
+                if (obj.place_id == self.id):
+                    result.append(obj)
+            return (result)
