@@ -17,10 +17,9 @@ class User(BaseModel, Base):
 
     email = Column(String(128), nullable=False)
     password = Column(String(128), nullable=False)
-    first_name = Column(String(128), nullable=True)
-    last_name = Column(String(128), nullable=True)
-    # Setting up the relationship Theory
-    user = relationship('Place', cascade='delete, all, delete-orphan',
-                        backref='user')
+    first_name = Column(String(128))
+    last_name = Column(String(128))
+    places = relationship('Place', cascade='delete, all, delete-orphan',
+                          backref='user')
     reviews = relationship('Review', cascade='all, delete, delete-orphan',
                            backref='user')
