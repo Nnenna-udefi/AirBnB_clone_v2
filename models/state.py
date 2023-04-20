@@ -1,8 +1,25 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
+from models.city import City
 
 
-class State(BaseModel):
+class State(BaseModel, Base):
     """ State class """
-    name = ""
+    __tablename__ = 'states'
+
+    name = Column(String(128), nullable=False)
+    cities = relationship('City', cascade='delete, all, delete-orphan'
+                          backref='state')
+
+    @property
+    def cities(self):
+        """FileStorage relationship between State and City"""
+        city_list = []
+        for models.storage.all(City).values():
+            if city.state_id = State.id:
+                city_list.append(city)
+        return city_list

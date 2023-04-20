@@ -16,10 +16,10 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns the list of objects of one type of class"""
+        obj_clas = {}
         if cls is None:
             return self.__objects
         else:
-            obj_clas = {}
             for key, value in self.__objects.items():
                 if isinstance(value, cls):
                     obj_clas[key] = value
