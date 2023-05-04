@@ -18,7 +18,7 @@ def do_pack():
                                                         dnow.minute,
                                                         dnow.second)
     # create archive and store it in the version directory
-    arch_store = local("tar cvzf versions/{} /web_static".format(archive_name))
+    arch_store = local("tar -cvzf versions/{} web_static".format(archive_name))
 
     if arch_store.succeeded:
         return 'versions/{}'.format(archive_name)
