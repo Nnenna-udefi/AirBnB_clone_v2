@@ -7,30 +7,29 @@ from datetime import datetime
 env.hosts = ['34.203.75.215', '54.175.88.234']
 env.user = 'ubuntu'
 
+
 def do_deploy(archive_path):
     """deploys and distributes archive"""
     if os.path.isfile(archive_path) is False:
         return False
-    
-    # get the file name without extensions
-    filen = archive_path.split('/')[-1]
-    name = filen.split('.')[0]
 
-    # upload the archive to the web server
-    put(archive_path, '/tmp/{}'.format(filen))
+    put(archive_path, '/tmp/')
 
-    # uncompress the archive to the folder
-    run('mkdir -p /data/web_static/releases/{}'.format(name))
-    run('tar -xzf /tmp/{} -C /data/web_static/releases/{}'.format(filen, name))
+    # Extract the archive to the new folder on the server
+    filename = archive_path.split('/')[-1]
+    foldername = '/data/web_static/releases/' + filename.split('.')[0]
+    run('mkdir -p {}'.format(foldername))
+    run('tar -xzf /tmp/{} -C {} --strip-components=1'.format(filename, foldername))
 
-    # delete the archive from the web server
-    run('rm /tmp/{}'.format(filen))
+    # Remove the archive from the server
+    run('rm /tmp/{}'.format(filename))
 
-    # delete the symbolic link from the web server
-    run('rm -rf /data/web_static/current')
+    # Move the contents of the web_static folder to the new folder
+    run('mv {}/web_static/* {}/'.format(foldername, foldername))
+    run('rm -rf {}/web_static'.format(foldername))
 
-    # create a new symbolic link with the archive file
-    run('sudo ln -sf /data/web_static/releases/{} /data/web_static/current'.format(name))
+    # Delete the symbolic link to the current version and create a new one
+    run('rm -f /data/web_static/current')
+    run('ln -s {} /data/web_static/current'.format(foldername))
 
     return True
-

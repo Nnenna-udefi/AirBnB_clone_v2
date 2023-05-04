@@ -10,7 +10,15 @@ fi
 # create the folders
 sudo mkdir -p /data/web_static/shared /data/web_static/releases/test /data/web_static/current
 # create a fake html file
-sudo echo '<html><title>Test page</title><body><p>Welcome to Nginx test page</p></body></html>' | sudo tee /data/web_static/releases/test/index.html
+sudo echo '
+<html>
+  <head>
+    <title>Test page</title>
+  </head>
+  <body>
+    <p>Welcome to Nginx test page</p>
+  </body>
+</html>' | sudo tee /data/web_static/releases/test/index.html
 # create a symbolic link
 sudo ln -sf /data/web_static/current /data/web_static/releases/test/
 # Give ownership of the /data/ folder to the ubuntu user
