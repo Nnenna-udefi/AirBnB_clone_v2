@@ -10,7 +10,7 @@ from datetime import datetime
 def do_pack():
     """generates a .tgz from html folder"""
     # creates the versions directory
-    run('mkdir -p versions')
+    local('mkdir -p versions')
 
     dnow = datetime.now()
     archive_name = 'web_static_{}{}{}{}{}{}.tgz'.format(dnow.year, dnow.month,
