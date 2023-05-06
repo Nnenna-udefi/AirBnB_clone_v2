@@ -4,10 +4,13 @@
 # install Nginx if not already installed
 if ! command -v nginx &> /dev/null
 then
-    sudo apt-get update
-    sudo apt-get install -y nginx
+    apt-get update
+    apt-get install -y nginx
 fi
 # create the folders
+sudo mkdir -p /data/
+sudo mkdir -p /data/web_static/
+sudo mkdir -p /data/web_static/releases
 sudo mkdir -p /data/web_static/shared /data/web_static/releases/test /data/web_static/current
 # create a fake html file
 sudo echo '
@@ -18,9 +21,11 @@ sudo echo '
   <body>
     <p>Welcome to Nginx test page</p>
   </body>
-</html>' | sudo tee /data/web_static/releases/test/index.html
+</html>' >> /data/web_static/releases/test/index.html
+
 # create a symbolic link
 sudo ln -sf /data/web_static/current /data/web_static/releases/test/
+
 # Give ownership of the /data/ folder to the ubuntu user
 sudo chown -R ubuntu:ubuntu /data/
 
@@ -29,12 +34,12 @@ printf %s "server {
     listen 80 default_server;
     listen [::]:80 default_server;
     add_header X-Served-By $HOSTNAME;
-    root   /var/www/html;
-    index  index.html index.htm;
+    root /var/www/html;
+    index index.html index.htm;
 
-    location /hbnb_static {
-        alias /data/web_static/current;
-        index index.html index.htm;
+    location /hbnb_static/ {
+        alias /data/web_static/current/hbnb_static/;
+        index index.html;
     }
     
     location /redirect_me {
@@ -46,7 +51,7 @@ printf %s "server {
       root /var/www/html;
       internal;
     }
-}" | sudo tee /etc/nginx/sites-available/default
+}" > /etc/nginx/sites-enabled/default
 
 # restart nginx
-sudo service nginx restart
+service nginx restart
