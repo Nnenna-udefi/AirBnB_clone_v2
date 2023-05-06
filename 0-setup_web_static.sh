@@ -51,7 +51,8 @@ printf %s "server {
       root /var/www/html;
       internal;
     }
-}" > /etc/nginx/sites-enabled/default
+}" > /etc/nginx/sites-available/hbnb_static
+sudo ln -sf /data/web_static/releases/test/ /data/web_static/current/hbnb_static
 
 # restart nginx
 service nginx restart
