@@ -27,31 +27,37 @@ def do_pack():
     else:
         return None
 
+
 def do_deploy(archive_path):
     """deploys and distributes archive"""
     if os.path.isfile(archive_path) is False:
         return False
 
-    put(archive_path, '/tmp/')
-
     # Extract the archive to the new folder on the server
     filename = archive_path.split('/')[-1]
-    foldername = '/data/web_static/releases/' + filename.split('.')[0]
-    run('mkdir -p {}'.format(foldername))
-    run('tar -xzf /tmp/{} -C {} --strip-components=1'.format(filename, foldername))
+    name = filename.split('.')[0]
+
+    put(archive_path, "/tmp/{}".format(filename))
+    run('mkdir -p /data/web_static/releases/{}/'.format(name))
+    run('tar -xzf /tmp/{} -C /data/web_static/releases/{}/'
+        .format(filename, name))
 
     # Remove the archive from the server
     run('rm /tmp/{}'.format(filename))
 
     # Move the contents of the web_static folder to the new folder
-    run('mv {}/web_static/* {}/'.format(foldername, foldername))
-    run('rm -rf {}/web_static'.format(foldername))
+    run("mv /data/web_static/releases/{}/web_static/* "
+        "/data/web_static/releases/{}/"
+        .format(name, name))
+    run('rm -rf /data/web_static/releases/{}/web_static'.format(name))
 
     # Delete the symbolic link to the current version and create a new one
     run('rm -f /data/web_static/current')
-    run('ln -s {} /data/web_static/current'.format(foldername))
+    run('ln -s /data/web_static/releases/{} /data/web_static/current'
+        .format(name))
 
     return True
+
 
 def deploy():
     """call do_pack and do_deploy functions"""
@@ -60,27 +66,21 @@ def deploy():
         return False
     return do_deploy(archive_path)
 
+
 def do_clean():
     """Fabric that deletes out-of-date archives, using the functiondo_clean"""
-    number = int(number)
-
-    if number < 2:
+    if int(number) == 0:
         number = 1
     else:
-        number += 1
+        int(number)
 
-    archives_to_delete = sorted(
-        run("ls -1 /data/web_static/releases").split("\n"))
+    archives = sorted(os.listdir("versions"))
+    [archives.pop() for i in range(number)]
+    with lcd("versions"):
+        [local("rm ./{}".format(a)) for a in archives]
 
-    for archive in archives_to_delete[:-number]:
-        if archive != "":
-            with settings(warn_only=True):
-                run("rm -rf /data/web_static/releases/{}".format(archive))
-
-    versions_to_delete = sorted(
-        local("ls -1 versions", capture=True).split("\n"))
-
-    for version in versions_to_delete[:-number]:
-        if version != "":
-            with settings(warn_only=True):
-                local("rm versions/{}".format(version))
+    with cd("/data/web_static/releases"):
+        archives = run("ls -tr").split()
+        archives = [a for a in archives if "web_static_" in a]
+        [archives.pop() for i in range(number)]
+        [run("rm -rf ./{}".format(a)) for a in archives]

@@ -38,7 +38,7 @@ printf %s "server {
     index index.html index.htm;
 
     location /hbnb_static/ {
-        alias /data/web_static/current/hbnb_static/;
+        alias /data/web_static/current/;
         index index.html;
     }
     
@@ -51,8 +51,7 @@ printf %s "server {
       root /var/www/html;
       internal;
     }
-}" > /etc/nginx/sites-available/hbnb_static
-sudo ln -sf /data/web_static/releases/test/ /data/web_static/current/hbnb_static
+}" > /etc/nginx/sites-available/default
 
 # restart nginx
 service nginx restart
