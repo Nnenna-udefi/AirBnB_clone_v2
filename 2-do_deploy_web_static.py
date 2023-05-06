@@ -13,23 +13,27 @@ def do_deploy(archive_path):
     if os.path.isfile(archive_path) is False:
         return False
 
-    put(archive_path, '/tmp/')
-
     # Extract the archive to the new folder on the server
     filename = archive_path.split('/')[-1]
-    foldername = '/data/web_static/releases/' + filename.split('.')[0]
-    run('mkdir -p {}'.format(foldername))
-    run('tar -xzf /tmp/{} -C {} --strip-components=1'.format(filename, foldername))
+    name = filename.split('.')[0]
+
+    put(archive_path, "/tmp/{}".format(filename))
+    run('mkdir -p /data/web_static/releases/{}/'.format(name))
+    run('tar -xzf /tmp/{} -C /data/web_static/releases/{}/'
+        .format(filename, name))
 
     # Remove the archive from the server
     run('rm /tmp/{}'.format(filename))
 
     # Move the contents of the web_static folder to the new folder
-    run('mv {}/web_static/* {}/'.format(foldername, foldername))
-    run('rm -rf {}/web_static'.format(foldername))
+    run("mv /data/web_static/releases/{}/web_static/* "
+        "/data/web_static/releases/{}/"
+        .format(name, name))
+    run('rm -rf /data/web_static/releases/{}/web_static'.format(name))
 
     # Delete the symbolic link to the current version and create a new one
     run('rm -f /data/web_static/current')
-    run('ln -s {} /data/web_static/current'.format(foldername))
+    run('ln -s /data/web_static/releases/{} /data/web_static/current'
+        .format(name))
 
     return True
