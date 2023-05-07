@@ -55,13 +55,14 @@ def do_deploy(archive_path):
     run('rm -f /data/web_static/current')
     run('ln -s /data/web_static/releases/{} /data/web_static/current'
         .format(name))
+    print("New version deployed!")
 
     return True
 
 
 def deploy():
     """call do_pack and do_deploy functions"""
-    archive_path = do_pack()
-    if not archive_path:
+    archiv_path = do_pack()
+    if archiv_path is None:
         return False
-    return do_deploy(archive_path)
+    return do_deploy(archiv_path)

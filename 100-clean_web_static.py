@@ -67,12 +67,9 @@ def deploy():
     return do_deploy(archive_path)
 
 
-def do_clean():
-    """Fabric that deletes out-of-date archives, using the functiondo_clean"""
-    if int(number) == 0:
-        number = 1
-    else:
-        int(number)
+def do_clean(number=0):
+    """Fabric that deletes out-of-date archives, usinge funtion """
+    number = 1 if int(number) == 0 else int(number)
 
     archives = sorted(os.listdir("versions"))
     [archives.pop() for i in range(number)]
