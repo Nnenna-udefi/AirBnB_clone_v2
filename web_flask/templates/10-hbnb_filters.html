@@ -3,12 +3,11 @@
   <HEAD>
     <META charset="utf-8">
     <TITLE>AirBnB clone</TITLE>
-    <LINK rel="stylesheet" href="../static/styles/reset.css">
     <LINK rel="stylesheet" href="../static/styles/4-common.css">
     <LINK rel="stylesheet" href="../static/styles/3-header.css">
     <LINK rel="stylesheet" href="../static/styles/3-footer.css">
     <LINK rel="stylesheet" href="../static/styles/6-filters.css">
-    <LINK rel="icon" href="../static/images/icon.png">
+    <LINK rel="icon" href="../static/images/icon.ico">
   </HEAD>
 
   <BODY>
@@ -19,8 +18,7 @@
         <DIV class="locations">
           <H3>States</H3>
           <H4>&nbsp;</H4>
-          <DIV class="popover">
-            <UL>
+          <UL class="popover">
             {% for state in states.values()|sort(attribute="name") %}
               <LI><STRONG>{{ state.name }}</STRONG>
                 <UL>
@@ -30,10 +28,10 @@
                 </UL>
               </LI>
             {% endfor %}
-            </UL>
-          </DIV>
+           </UL>
 
-        </DIV><DIV class="amenities">
+        </DIV>
+	<DIV class="amenities">
           <H3>Amenities</H3>
           <H4>&nbsp;</H4>
           <UL class="popover">
