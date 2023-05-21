@@ -14,6 +14,15 @@ def states_list():
     return render_template('7-states_list.html', states=states)
 
 
+@app.route("/states/<id>", strict_slashes=False)
+def states_id(id):
+    """Displays an HTML page with info about <id>, if it exists."""
+    for state in storage.all("State").values():
+        if state.id == id:
+            return render_template("9-states.html", state=state)
+    return render_template("9-states.html")
+
+
 @app.teardown_appcontext
 def teardown_db(exception):
     """Remove the current SQLAlchemy session."""
